@@ -31,12 +31,12 @@ def get_user(user_id: int, db: Session = Depends(get_db)) -> User:
     return user
 
 
-@router.post("/")
+@router.post("/", status_code=201)
 def create_user(user: User, db: Session = Depends(get_db)):
     return crud.create_user(db, user.username, user.password, user.bars_id)
 
 
-@router.delete("/{user_id}")
+@router.delete("/{user_id}", status_code=204)
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     return crud.delete_user(db, user_id)
 
@@ -56,6 +56,3 @@ def login(user_in: TokenObtain, db: Session = Depends(get_db)) -> str:
         }
     )
     return token
-
-
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN0cmluZyIsImJhcnNfaWQiOjAsImV4cCI6MTczNDk4ODU5MX0.RK-Ti1BJ4Vy2IMsxEKukwhbS07ESwASH0wggqpqByrw"
