@@ -20,6 +20,7 @@ class Settings(BaseSettings):
 
     debug: bool
     base_dir: Path = Path(__file__).resolve().parent
+    hall_dir: Path = base_dir / "halls"
 
 
 settings = Settings()  # type: ignore

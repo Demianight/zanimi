@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
-from dependencies import get_db, get_request_user
+from common.dependencies import get_db, get_request_user
 from users import crud
-from .models import TokenObtain, User
-from . import utils
 
+from . import utils
+from .models import TokenObtain, User
 
 router = APIRouter(
     prefix="/users",

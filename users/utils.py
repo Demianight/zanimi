@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
+
+import jwt
 from fastapi import HTTPException
 from passlib.context import CryptContext
-import jwt
 
 from settings import settings
 

@@ -17,7 +17,6 @@ def create_user(
     return new_user
 
 
-# Read (get) a single user by ID
 def get_user_by_id(session: Session, user_id: int) -> User | None:
     statement = select(User).where(User.id == user_id)
     try:
@@ -27,7 +26,6 @@ def get_user_by_id(session: Session, user_id: int) -> User | None:
         return None
 
 
-# Read (get) a single user by username
 def get_user_by_username(session: Session, username: str) -> User | None:
     statement = select(User).where(User.username == username)
     try:
@@ -37,7 +35,6 @@ def get_user_by_username(session: Session, username: str) -> User | None:
         return None
 
 
-# Read (get) all users
 def get_all_users(session: Session) -> list[User]:
     statement = select(User)
     return session.exec(statement).all()  # type: ignore
@@ -67,7 +64,6 @@ def update_user(
     return user
 
 
-# Delete a user
 def delete_user(session: Session, user_id: int) -> bool:
     user = get_user_by_id(session, user_id)
     if not user:

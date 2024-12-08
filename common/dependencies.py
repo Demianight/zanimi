@@ -1,10 +1,10 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from database import engine
 from sqlmodel import Session
 
+from database import engine
+from users import crud, utils
 from users.models import User
-from users import utils, crud
 
 
 def get_db():
