@@ -5,12 +5,8 @@ from users.models import User
 from users.utils import hash_password
 
 
-def create_user(
-    session: Session, username: str, password: str, bars_id: int
-) -> User:
-    new_user = User(
-        username=username, password=hash_password(password), bars_id=bars_id
-    )
+def create_user(session: Session, username: str, password: str) -> User:
+    new_user = User(username=username, password=hash_password(password))
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
@@ -45,7 +41,6 @@ def update_user(
     user_id: int,
     username: str | None = None,
     password: str | None = None,
-    bars_id: int | None = None,
 ) -> User | None:
     user = get_user_by_id(session, user_id)
     if not user:
@@ -55,8 +50,6 @@ def update_user(
         user.username = username
     if password is not None:
         user.password = hash_password(password)
-    if bars_id is not None:
-        user.bars_id = bars_id
 
     session.add(user)
     session.commit()
