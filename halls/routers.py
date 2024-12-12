@@ -19,7 +19,6 @@ def get_halls(db: Session = Depends(get_db)) -> list[HallPublic]:
 
 @router.get("/{hall_id}")
 def get_hall(hall_id: int, db: Session = Depends(get_db)) -> HallPublic:
-    hall = crud.get_hall_by_id(db, hall_id)
-    if not hall:
-        raise HTTPException(status_code=404, detail="Hall not found")
-    return hall
+    if hall := crud.get_hall_by_id(db, hall_id):
+        return hall
+    raise HTTPException(status_code=404, detail="Hall not found")
