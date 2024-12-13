@@ -12,7 +12,6 @@ class SeatBase(SQLModel):
     row: int
     column: int
     block_id: int
-    booked_by_id: Optional[int] = None
 
 
 # Seat model with table support
@@ -44,4 +43,5 @@ class SeatUpdate(SQLModel):
 # Seat public model
 class SeatPublic(SeatBase):
     id: int
-    status: str 
+    status: str
+    booked_by_id: Optional[int] = None
