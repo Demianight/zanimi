@@ -2,3 +2,4 @@ database.db
 requests.http
 test.py
 venv
+.env

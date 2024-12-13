@@ -1,31 +1,49 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
-from common.dependencies import get_db
+from common.dependencies import get_db, get_request_user
 from seats import crud
+from users.models import User
 
-from .models import SeatPublic, SeatUpdate
-from users import crud as user_crud
-
-
-router = APIRouter(
-    prefix="/seats",
-    tags=["Seats"]
-    )
-router.get("/seats{seats_id}", response_model=SeatPublic)
-def get_seat(seat_id: int, db: Session = Depends(get_db)) -> SeatPublic:
-    if seat := crud.get_seat_by_id(db, seat_id):
-        return seat
-    raise HTTPException(status_code=404, detail='Seat not found')
+from .models import SeatPublic
 
 
-router.post("/seats{seat_id}/book{booked_by_id}", response_model=SeatPublic)
-def book_seat(seat_id: int, username: str, db: Session = Depends(get_db)) -> SeatUpdate:
-    user = user_crud.get_user_by_username(db, username)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+router = APIRouter(prefix="/seats", tags=["seats"])
 
-    seat = crud.book_seat(session=db, seat_id=seat_id, booked_by_id=user.id)
-    if seat is None:
-        raise HTTPException(status_code=404, detail="Seat not found or already booked")
+
+@router.get("/{seats_id}")
+def get_seat(
+    block_id: int, row: int, column: int, db: Session = Depends(get_db)
+) -> SeatPublic:
+    seat = crud.get_seat_by_id(db, block_id, row, column)
+    if not seat:
+        raise HTTPException(status_code=404, detail="Seat not found")
     return seat
+
+
+@router.post("/", status_code=201)
+def create_seat(block_id: int, row: int, column: int, db: Session = Depends(get_db)):
+    seat = crud.get_seat_by_id(db, block_id, row, column)
+    if seat:
+        raise HTTPException(status_code=400, detail="Seat already exists")
+    return crud.create_seat(db, block_id, row, column)
+
+
+@router.post("/book{seat_id}", status_code=201)
+def book_seat(
+    seat_id: int, user: User = Depends(get_request_user), db: Session = Depends(get_db)
+) -> SeatPublic:
+    seat = crud.book_seat(seat_id, user, db)
+    if not seat:
+        raise HTTPException(
+            status_code=400, detail="Seat is already booked or does not exist"
+        )
+    return seat
+
+
+@router.delete("/cancel_booking{seats_id}", status_code=204)
+def cancel_booking(
+    seat_id: int, user: User = Depends(get_request_user), db: Session = Depends(get_db)
+):
+    crud.cancel_booking(seat_id, user, db)
+    return "Booking was succesfully canceled"
