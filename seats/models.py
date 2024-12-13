@@ -18,6 +18,7 @@ class SeatBase(SQLModel):
 # Seat model with table support
 class Seat(SeatBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    status: str = Field(default="available")
 
     block_id: int = Field(foreign_key="block.id")
     booked_by_id: Optional[int] = Field(default=None, foreign_key="user.id")
@@ -37,8 +38,10 @@ class SeatUpdate(SQLModel):
     column: Optional[int] = None
     block_id: Optional[int] = None
     booked_by_id: Optional[int] = None
+    status: Optional[str] = None
 
 
 # Seat public model
 class SeatPublic(SeatBase):
     id: int
+    status: str = "available"
