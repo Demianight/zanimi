@@ -44,4 +44,4 @@ class SeatUpdate(SQLModel):
 # Seat public model
 class SeatPublic(SeatBase):
     id: int
-    status: str = "available"
+    status: str 
