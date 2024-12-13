@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from database import create_db_and_tables
 from users.routers import router as user_router
+from halls.routers import router as hall_router
 
 
 @asynccontextmanager
@@ -16,7 +17,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 app.include_router(user_router)
-
+app.include_router(hall_router)
 
 if __name__ == "__main__":
     import uvicorn
