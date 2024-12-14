@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlmodel import Session
 
 from common.dependencies import get_db
@@ -13,10 +13,15 @@ router = APIRouter(
 
 
 @router.get("/")
-def get_halls(Show_current: bool, db: Session = Depends(get_db)) -> list[HallPublic]:
-    if Show_current:
-        return crud.get_all_halls_by_datatime(db)
-    return crud.get_all_halls(db)
+def get_halls(
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    Show_current: bool = True,
+    db: Session = Depends(get_db),
+) -> list[HallPublic]:
+    if hall := crud.get_all_paginated_halls(db, offset, limit, Show_current):
+        return hall
+    raise HTTPException(status_code=404, detail="No items found.")
 
 
 @router.get("/{hall_id}")
