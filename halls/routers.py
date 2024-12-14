@@ -13,7 +13,9 @@ router = APIRouter(
 
 
 @router.get("/")
-def get_halls(db: Session = Depends(get_db)) -> list[HallPublic]:
+def get_halls(Show_current: bool, db: Session = Depends(get_db)) -> list[HallPublic]:
+    if Show_current:
+        return crud.get_all_halls_by_datatime(db)
     return crud.get_all_halls(db)
 
 
