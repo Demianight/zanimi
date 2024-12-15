@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, select
@@ -16,9 +16,19 @@ def get_hall_by_id(session: Session, hall_id: int) -> Hall | None:
         return None
 
 
-def get_all_paginated_halls(session: Session, offset: int = 0, limit: int = 10, relevant_only: bool = True) -> list[Hall]:
+def get_all_paginated_halls(
+    session: Session,
+    offset: int = 0,
+    limit: int = 10,
+    relevant_only: bool = True,
+    minutes: int = 15
+) -> list[Hall]:
     if relevant_only:
-        statement = select(Hall).limit(limit).offset(offset).order_by(Hall.schedule).where(Hall.schedule >= datetime.now())
+        statement = (
+            select(Hall)
+            .where(Hall.schedule >= (datetime.now() - timedelta(minutes=minutes)))
+        )
     if not relevant_only:
-        statement = select(Hall).limit(limit).offset(offset).order_by(Hall.schedule)
+        statement = select(Hall)
+    statement = statement.limit(limit).offset(offset).order_by(Hall.schedule)
     return session.exec(statement).all()
