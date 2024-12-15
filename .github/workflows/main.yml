@@ -17,7 +17,16 @@ jobs:
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-    - name: connect and pull
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && systemctl restart fastapi.service && exit"
+    - name: connect and pull with sudo
+      # Connect to the server, perform actions, and use sudo securely
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+          cd ${{ secrets.WORK_DIR }}
+          git checkout ${{ secrets.MAIN_BRANCH }}
+          git pull
+          echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S systemctl restart fastapi.service
+        EOF
+
     - name: cleanup
+      # Clean up sensitive files after execution
       run: rm -rf ~/.ssh
