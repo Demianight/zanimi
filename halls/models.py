@@ -50,6 +50,7 @@ class BlockPublicWithSeats(BlockPublic):
 # Base class for Hall
 class HallBase(SQLModel):
     name: str
+    subject: str
     schedule: datetime
 
 
