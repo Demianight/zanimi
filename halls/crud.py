@@ -23,12 +23,10 @@ def get_all_paginated_halls(
     relevant_only: bool = True,
     minutes: int = 15
 ) -> list[Hall]:
+    statement = select(Hall)
     if relevant_only:
-        statement = (
-            select(Hall)
-            .where(Hall.schedule >= (datetime.now() - timedelta(minutes=minutes)))
+        statement = statement.where(
+            Hall.schedule >= (datetime.now() - timedelta(minutes=minutes))
         )
-    if not relevant_only:
-        statement = select(Hall)
     statement = statement.limit(limit).offset(offset).order_by(Hall.schedule)
     return session.exec(statement).all()
