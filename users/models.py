@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
-from seats.models import Seat
+from seats.models import Seat, SeatPublic
 
 
 # Base class for shared fields
@@ -13,10 +13,7 @@ class UserBase(SQLModel):
 # Main User model with table support
 class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    password: str = Field(
-        exclude=True
-    )  # This field is excluded from serialization
-
+    password: str
     seats: list[Seat] = Relationship(back_populates="booked_by")
 
 
@@ -34,6 +31,7 @@ class UserUpdate(SQLModel):
 # User public model
 class UserPublic(UserBase):
     id: int
+    seats: list[SeatPublic]
 
 
 class TokenObtain(SQLModel):

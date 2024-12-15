@@ -34,7 +34,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)) -> UserPublic:
 
 
 @router.post("/", status_code=201)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_user(user: UserCreate, db: Session = Depends(get_db)) -> UserPublic:
     return crud.create_user(db, user.username, user.password)
 
 
