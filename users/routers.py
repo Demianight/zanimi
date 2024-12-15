@@ -34,7 +34,14 @@ def get_user(user_id: int, db: Session = Depends(get_db)) -> UserPublic:
 
 
 @router.post("/", status_code=201)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_or_get_user(user: UserCreate, db: Session = Depends(get_db)):
+    existing_user = crud.get_user_by_username(db, user.username)
+
+    if existing_user:
+        if not utils.verify_password(user.password, existing_user.password):
+            raise HTTPException(status_code=400, detail="Invalid password")
+        return existing_user
+
     return crud.create_user(db, user.username, user.password)
 
 
