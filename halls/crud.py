@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy.exc import NoResultFound
-from sqlmodel import Session, select, func
+from sqlmodel import Session, select
 
 
 from halls.models import Hall
@@ -16,14 +16,9 @@ def get_hall_by_id(session: Session, hall_id: int) -> Hall | None:
         return None
 
 
-def get_all_paginated_halls(session: Session, offset: int = 0, limit: int = 10, Show_current: bool = True) -> list[Hall]:
-    statement_size = select(func.count()).select_from(Hall)
-    size = session.exec(statement_size).scalar()
-    if (limit*offset) >= size:
-        return
-    statement = select(Hall).limit(limit).offset(limit*offset).order_by(Hall.schedule).where(
-        Hall.schedule >= datetime.now()
-        if Show_current
-        else Hall.schedule
-        )
+def get_all_paginated_halls(session: Session, offset: int = 0, limit: int = 10, relevant_only: bool = True) -> list[Hall]:
+    if relevant_only:
+        statement = select(Hall).limit(limit).offset(offset).order_by(Hall.schedule).where(Hall.schedule >= datetime.now())
+    if not relevant_only:
+        statement = select(Hall).limit(limit).offset(offset).order_by(Hall.schedule)
     return session.exec(statement).all()

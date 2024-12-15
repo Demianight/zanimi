@@ -16,10 +16,10 @@ router = APIRouter(
 def get_halls(
     limit: int = Query(default=10, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
-    Show_current: bool = True,
+    relevant_only: bool = True,
     db: Session = Depends(get_db),
 ) -> list[HallPublic]:
-    if hall := crud.get_all_paginated_halls(db, offset, limit, Show_current):
+    if hall := crud.get_all_paginated_halls(db, offset, limit, relevant_only):
         return hall
     raise HTTPException(status_code=404, detail="No items found.")
 
