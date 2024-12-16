@@ -1,6 +1,9 @@
 from typing import Optional, Sequence
+
 from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, select
+
+from seats.exceptions import AlreadyBookedException
 from seats.models import Seat
 from users.models import User
 
@@ -19,7 +22,11 @@ def get_seats_by_block_id(session: Session, block_id: int) -> Sequence[Seat]:
 
 
 def create_seat(
-    session: Session, block_id: int, row: int, column: int, status: str = "available"
+    session: Session,
+    block_id: int,
+    row: int,
+    column: int,
+    status: str = "available",
 ) -> Seat:
     new_seat = Seat(status=status, block_id=block_id, row=row, column=column)
     session.add(new_seat)
@@ -33,11 +40,16 @@ def book_seat(
     seat_id: int,
     user: User,
 ) -> Optional[Seat]:
-    statement = select(Seat).where(Seat.id == seat_id, Seat.status == "available")
+    statement = select(Seat).where(
+        Seat.id == seat_id, Seat.status == "available"
+    )
     seat = session.exec(statement).first()
 
     if not seat:
         return None
+
+    if seat.block.hall.id in [seat.block.hall.id for seat in user.seats]:
+        raise AlreadyBookedException
 
     seat.booked_by_id = user.id
     seat.status = "booked"

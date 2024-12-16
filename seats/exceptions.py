@@ -1,0 +1,2 @@
+class AlreadyBookedException(Exception):
+    pass
