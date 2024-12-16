@@ -30,6 +30,12 @@ if __name__ == "__main__":
             name="Б-201",
             subject="Физика",
             schedule=date,
+            blocks_info=[
+                {"rows": 14, "columns": 6, "number": 1},
+                {"rows": 13, "columns": 8, "number": 2},
+                {"rows": 13, "columns": 8, "number": 3},
+                {"rows": 14, "columns": 6, "number": 4},
+            ],
         )
         date = date + next_lesson
         create_hall(
@@ -37,6 +43,12 @@ if __name__ == "__main__":
             name="В-301",
             subject="Программирование",
             schedule=date,
+            blocks_info=[
+                {"rows": 10, "columns": 8, "number": 1},
+                {"rows": 11, "columns": 7, "number": 2},
+                {"rows": 11, "columns": 7, "number": 3},
+                {"rows": 10, "columns": 8, "number": 4},
+            ],
         )
         date = date + 2 * next_lesson
         create_hall(
@@ -44,4 +56,10 @@ if __name__ == "__main__":
             name="Ж-401",
             subject="История",
             schedule=date,
+            blocks_info=[
+                {"rows": 13, "columns": 13, "number": 1},
+                {"rows": 9, "columns": 9, "number": 2},
+                {"rows": 9, "columns": 9, "number": 3},
+                {"rows": 13, "columns": 13, "number": 4},
+            ],
         )
