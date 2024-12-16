@@ -37,7 +37,7 @@ def book_seat(
     return seat  # type: ignore
 
 
-@router.delete("/{seats_id}/cancel_booking", status_code=204)
+@router.delete("/{seat_id}/cancel_booking", status_code=204)
 def cancel_booking(
     seat_id: int,
     db: Session = Depends(get_db),
