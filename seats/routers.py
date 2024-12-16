@@ -3,6 +3,7 @@ from sqlmodel import Session
 
 from common.dependencies import get_db, get_request_user
 from seats import crud
+from seats.exceptions import AlreadyBookedException
 from users.models import User
 
 from .models import SeatCreate, SeatPublic
@@ -29,7 +30,13 @@ def book_seat(
     user: User = Depends(get_request_user),
     db: Session = Depends(get_db),
 ) -> SeatPublic:
-    seat = crud.book_seat(db, seat_id, user)
+    try:
+        seat = crud.book_seat(db, seat_id, user)
+    except AlreadyBookedException:
+        raise HTTPException(
+            status_code=400, detail="Seat is already booked in this hall"
+        )
+
     if not seat:
         raise HTTPException(
             status_code=400, detail="Seat is already booked or does not exist"
