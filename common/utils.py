@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from halls.models import Block, Hall
+from seats.models import Seat
 
 
 def create_hall(
@@ -22,5 +23,16 @@ def create_hall(
     for block_info in blocks_info:
         block = Block(hall_id=hall.id, **block_info)
         session.add(block)
+        session.commit()
+        session.refresh(block)
+        for row in range(block_info["rows"]):
+            for column in range(block_info["columns"]):
+                seat = Seat(
+                    status="available",
+                    block_id=block.id,
+                    row=row,
+                    column=column,
+                )
+                session.add(seat)
 
     session.commit()

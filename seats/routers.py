@@ -7,7 +7,6 @@ from users.models import User
 
 from .models import SeatCreate, SeatPublic
 
-
 router = APIRouter(prefix="/seats", tags=["seats"])
 
 
