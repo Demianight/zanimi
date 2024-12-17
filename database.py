@@ -57,9 +57,8 @@ if __name__ == "__main__":
             subject="История",
             schedule=date,
             blocks_info=[
-                {"rows": 13, "columns": 13, "number": 1},
-                {"rows": 9, "columns": 9, "number": 2},
-                {"rows": 9, "columns": 9, "number": 3},
-                {"rows": 13, "columns": 13, "number": 4},
+                {"rows": 8, "columns": 9, "number": 1},
+                {"rows": 10, "columns": 9, "number": 2},
+                {"rows": 8, "columns": 9, "number": 3},
             ],
         )
